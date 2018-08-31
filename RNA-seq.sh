@@ -3,5 +3,5 @@
 
 tes="sample"
 
-echo $tes
+echo $tes "make RNA-seq branch"
 
