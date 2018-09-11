@@ -14,6 +14,11 @@
 #各step毎に異常終了を拾うようにする
 #
 #FASTQが圧縮されていた場合のSTAR option (→変数に入れ込んでif分で分岐するか、そもそものinputを統一させるか)
+#
+#Intron GTFリストを作成しFeaturecountでカウントするひつようあり。(unstaarndのみでOK)
+# EXON       = normal GTF unstaarnd count,
+# INTRON     = INTRON GTF unstaarnd count,
+# INTERGENIC = TOTAL MAP -(EXON + INTRON)
 
 #------------------------------------------------------
 # USAGE
@@ -108,12 +113,14 @@ elif [ $MODE != "SE" ] ;then
 	exit
 fi
 
-featureCounts ${FCOUNT_OPT} -a $GTF -o ${NAME}_unstarand ${NAME}_Aligned.sortedByCoord.out.bam -s 0 > COUNT_LOG.unstarand.txt 2>&1
-featureCounts ${FCOUNT_OPT} -a $GTF -o ${NAME}_starand ${NAME}_Aligned.sortedByCoord.out.bam -s 1 > COUNT_LOG.starand.txt  2>&1
-featureCounts ${FCOUNT_OPT} -a $GTF -o ${NAME}_reverse_starand ${NAME}_Aligned.sortedByCoord.out.bam -s 2 > COUNT_LOG.rev_unstarand.txt 2>&1
+featureCounts ${FCOUNT_OPT} -a $GTF -o ${NAME}_unstarand ${NAME}_Aligned.sortedByCoord.out.bam -s 0       > ${NAME}_COUNT_LOG.unstarand.txt 2>&1
+featureCounts ${FCOUNT_OPT} -a $GTF -o ${NAME}_starand ${NAME}_Aligned.sortedByCoord.out.bam -s 1         > ${NAME}_COUNT_LOG.starand.txt  2>&1
+featureCounts ${FCOUNT_OPT} -a $GTF -o ${NAME}_reverse_starand ${NAME}_Aligned.sortedByCoord.out.bam -s 2 > ${NAME}_COUNT_LOG.rev_unstarand.txt 2>&1
 
 
 # MAKE STATS
+#Ribosomal RNA 要検討
+samtools view -sh ${NAME}__Aligned.sortedByCoord.out.bam "ribosomal" | wc -l > LOG_${NAME}.rib  2>&1
 
 
 # Calk RPKM
